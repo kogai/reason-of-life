@@ -44,8 +44,6 @@ let make = (_children) => {
       |> range
       |> List.map((n) => ReasonReact.stringToElement(string_of_int(n)))
       |> Array.of_list;
-    Js.log(xs);
-
     <div onClick=(self.handle(handleClick))>
       <div className="buttons has-addons">
         <button className="button" onClick=(self.reduce(inc))>

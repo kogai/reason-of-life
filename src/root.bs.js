@@ -46,7 +46,6 @@ function make() {
   var newrecord = ReasonReact.reducerComponent("Page").slice();
   newrecord[/* render */9] = (function (self) {
       var xs = $$Array.of_list(List.map(Pervasives.string_of_int, range(self[/* state */2][/* size */1])));
-      console.log(xs);
       return React.createElement("div", {
                   onClick: Curry._1(self[/* handle */0], handleClick)
                 }, React.createElement("div", {
