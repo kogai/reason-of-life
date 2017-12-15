@@ -12,7 +12,8 @@ type action =
 /* let style = Utils.requireCSS("./cell.css"); */
 /* let style = Utils.requireCSS("../../../src/cell.css"); */
 /* [@bs.module] external style : Js.t({..}) = "../../../src/cell.css"; */
-[@bs.module] external style : Js.t({..}) = "../src/cell.css";
+/* [@bs.module] external style : Js.t({..}) = "../src/cell.css"; */
+[@bs.module] external style : Js.t({..}) = "./cell.css";
 
 let handleClick = (_event, _self) => Js.log("clicked!");
 
