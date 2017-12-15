@@ -39,28 +39,25 @@ let make = (_children) => {
     | Dec => ReasonReact.Update({...s, size: s.size - 1})
     },
   render: (self) => {
-    let xs = self.state.size
+    let xs =
+      self.state.size
       |> range
       |> List.map((n) => ReasonReact.stringToElement(string_of_int(n)))
-      |> Array.arrayOfList ;
+      |> Array.of_list;
     Js.log(xs);
+    let ys = Enzyme.f("OK?");
+    Js.log(ys);
 
     <div onClick=(self.handle(handleClick))>
-
-        <div className="buttons has-addons">
-          <button className="button" onClick=(self.reduce(inc))>
-            (ReasonReact.stringToElement("Plus"))
-          </button>
-          <button className="button" onClick=(self.reduce(dec))>
-            (ReasonReact.stringToElement("Minus"))
-          </button>
-        </div>
+      <div className="buttons has-addons">
+        <button className="button" onClick=(self.reduce(inc))>
+          (ReasonReact.stringToElement("Plus"))
+        </button>
+        <button className="button" onClick=(self.reduce(dec))>
+          (ReasonReact.stringToElement("Minus"))
+        </button>
       </div>
-      /* (ReasonReact.stringToElement(self.state.value))
-         (ReasonReact.stringToElement(string_of_int(self.state.size))) */
-      /* (ReasonReact.arrayToElement(
-
-         )) */
-      /* () */
+      (ReasonReact.arrayToElement(xs))
+    </div>
   }
 };
