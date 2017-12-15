@@ -45,8 +45,6 @@ let make = (_children) => {
       |> List.map((n) => ReasonReact.stringToElement(string_of_int(n)))
       |> Array.of_list;
     Js.log(xs);
-    let ys = Enzyme.f("OK?");
-    Js.log(ys);
 
     <div onClick=(self.handle(handleClick))>
       <div className="buttons has-addons">
