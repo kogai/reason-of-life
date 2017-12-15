@@ -1,3 +1,4 @@
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const path = require('path');
 
 module.exports = {
@@ -9,4 +10,15 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "build"),
   }
+  // module: {
+  //   rules: [{
+  //     test: /\.css$/,
+  //     use: ExtractTextPlugin.extract({
+  //       fallback: "style-loader",
+  //       use: [{
+  //         loader: "css-loader",
+  //       }],
+  //     }),
+  //   }]
+  // }
 };
