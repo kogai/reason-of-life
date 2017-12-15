@@ -39,12 +39,12 @@ let make = (_children) => {
     | Dec => ReasonReact.Update({...s, size: s.size - 1})
     },
   render: (self) => {
-    /* Js.log(range(5)); */
-    /* let xs =
-         List.map(
-         n => (ReasonReact.stringToElement(string_of_int(n)))
-       )(range(self.state.size)); */
-    let xs = self.state.size |> List.map((n) => ReasonReact.stringToElement(string_of_int(n)));
+    let xs = self.state.size
+      |> range
+      |> List.map((n) => ReasonReact.stringToElement(string_of_int(n)))
+      |> Array.arrayOfList ;
+    Js.log(xs);
+
     <div onClick=(self.handle(handleClick))>
 
         <div className="buttons has-addons">
