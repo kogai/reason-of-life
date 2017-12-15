@@ -1,0 +1,9 @@
+.my {
+  &Active {
+    background-color: #fff;
+  }
+
+  &InActive {
+    background-color: #000;
+  }
+}

@@ -7,18 +7,27 @@ module.exports = {
     path: path.join(__dirname, "build"),
     filename: 'bundle.js',
   },
-  devServer: {
-    contentBase: path.join(__dirname, "build"),
-  }
-  // module: {
-  //   rules: [{
-  //     test: /\.css$/,
-  //     use: ExtractTextPlugin.extract({
-  //       fallback: "style-loader",
-  //       use: [{
-  //         loader: "css-loader",
-  //       }],
-  //     }),
-  //   }]
-  // }
+  // devServer: {
+    // contentBase: path.join(__dirname, "build"),
+  // },
+  module: {
+    rules: [{
+      test: /\.css$/,
+      use: ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: [{
+          loader: "css-loader",
+          query: {
+            modules: true,
+            sourceMap: true,
+            importLoaders: 1,
+            localIdentName: "[name]__[local]___[hash:10]",
+          }
+        }],
+      }),
+    }]
+  },
+  plugins: [
+    new ExtractTextPlugin("styles.css"),
+  ]
 };
