@@ -10,7 +10,7 @@ type t = {
   status: life
 };
 
-let make = (~status, ~x, ~y, _children) => {
+let make = (~status, _children) => {
   ...ReasonReact.statelessComponent("Cell"),
   render: (_self) =>
     <div
