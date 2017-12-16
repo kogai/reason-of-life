@@ -10,10 +10,11 @@ type t = {
   status: life
 };
 
-let make = (~status, _children) => {
+let make = (~status, ~onClick, _children) => {
   ...ReasonReact.statelessComponent("Cell"),
   render: (_self) =>
     <div
+      onClick
       className=(
         cx(
           switch status {

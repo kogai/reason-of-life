@@ -7,16 +7,17 @@ type state = {
 type action =
   | Inc
   | Dec
-  | Spawn
-  | Play;
+  | Spawn(int, int)
+  | Play(int)
+  | Tick;
 
 let inc = (_) => Inc;
 
 let dec = (_) => Dec;
 
-let spawn = (_) => Spawn;
+let spawn = (x, y, _) => Spawn(x, y);
 
-let play = (_) => Play;
+let play = (n, _) => Play(n);
 
 let next = (board) => {
   let survive = (x, y, status) => {
@@ -66,12 +67,36 @@ let next = (board) => {
      )
 };
 
-let rec tick = (period, board) =>
-  switch period {
-  | 0 => board
-  | _ => tick(period - 1, next(board))
-  };
+[@bs.val] external setTimeout : (unit => unit, int) => float = "setTimeout";
 
+let tick = (reduce, p, b) => {
+  let rec tickImpl = (period, board) =>
+    switch period {
+    | 0 => ()
+    | _ =>
+      ignore(
+        setTimeout(
+          () => {
+            Js.log("called.");
+            reduce(() => Tick, ());
+            tickImpl(period - 1, next(board))
+          },
+          100
+        )
+      )
+    };
+  tickImpl(p, b)
+};
+
+/* ignore(
+     setTimeout(
+       () => {
+         Js.log("called.");
+         reduce(() => Tick, ())
+       },
+       100
+     )
+   ) */
 exception Unreachable;
 
 let make = (_children) => {
@@ -93,8 +118,19 @@ let make = (_children) => {
     switch a {
     | Inc => ReasonReact.Update({...s, size: s.size + 1})
     | Dec => ReasonReact.Update({...s, size: s.size - 1})
-    | Play => ReasonReact.Update({...s, board: tick(s.period, s.board)})
-    | Spawn => raise(Unreachable)
+    | Tick => ReasonReact.Update({...s, board: next(s.board)})
+    | Play(n) => ReasonReact.SideEffects((({reduce}) => tick(reduce, n, s.board)))
+    | Spawn(mx, my) =>
+      ReasonReact.Update({
+        ...s,
+        board:
+          s.board
+          |> List.map(
+               List.map(
+                 ({Cell.x, y} as cell) => x == mx && y == my ? {...cell, status: Cell.Live} : cell
+               )
+             )
+      })
     },
   render: (self) =>
     <div>
@@ -105,10 +141,7 @@ let make = (_children) => {
         <button className="button" onClick=(self.reduce(dec))>
           (ReasonReact.stringToElement("Minus"))
         </button>
-        <button className="button" onClick=(self.reduce(spawn))>
-          (ReasonReact.stringToElement("Spawn"))
-        </button>
-        <button className="button" onClick=(self.reduce(play))>
+        <button className="button" onClick=(self.reduce(play(self.state.period)))>
           (
             ReasonReact.stringToElement(
               Printf.sprintf("Play(%s)", string_of_int(self.state.period))
@@ -123,7 +156,11 @@ let make = (_children) => {
                xs
                |> List.map(
                     ({Cell.x, y, status}) =>
-                      <Cell key=(string_of_int(x) ++ "," ++ string_of_int(y)) status />
+                      <Cell
+                        key=(string_of_int(x) ++ "," ++ string_of_int(y))
+                        status
+                        onClick=(self.reduce(spawn(x, y)))
+                      />
                   )
                |> Array.of_list
                |> ReasonReact.arrayToElement
