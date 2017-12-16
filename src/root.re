@@ -18,12 +18,34 @@ let spawn = (_) => Spawn;
 
 let play = (_) => Play;
 
+let next = (board) => {
+  let survive = (_x, _y, _status) => {
+    let arround = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1),
+                                   (1, 1)];
+
+    true
+  };
+
+  board |> List.map(
+        List.map(({ Cell.x, y, status }) => {
+          Cell.x,
+          y,
+          status: survive(x, y, status) ? Cell.Live : Cell.Death
+        })
+      )
+};
+
+let rec tick = (period, board) => switch period {
+  | 0 => board
+  | _ => tick(period - 1, next(board))
+};
+
 exception Unreachable;
 
 let make = (_children) => {
   ...ReasonReact.reducerComponent("Page"),
   initialState: () => {
-    period: 100,
+    period: 10,
     size: 16,
     board:
       Utils.(
@@ -39,7 +61,7 @@ let make = (_children) => {
     switch a {
     | Inc => ReasonReact.Update({...s, size: s.size + 1})
     | Dec => ReasonReact.Update({...s, size: s.size - 1})
-    | Play => raise(Unreachable)
+    | Play => ReasonReact.Update({...s, board: tick(s.period, s.board)})
     | Spawn => raise(Unreachable)
     },
   render: (self) =>
