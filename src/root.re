@@ -19,26 +19,58 @@ let spawn = (_) => Spawn;
 let play = (_) => Play;
 
 let next = (board) => {
-  let survive = (_x, _y, _status) => {
-    let arround = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1),
-                                   (1, 1)];
-
-    true
+  let survive = (x, y, status) => {
+    let arround = [
+      ((-1), (-1)),
+      (0, (-1)),
+      (1, (-1)),
+      ((-1), 0),
+      (1, 0),
+      ((-1), 1),
+      (0, 1),
+      (1, 1)
+    ];
+    let survivers =
+      arround
+      |> List.map(
+           ((mx, my)) =>
+             try (
+               y
+               + my
+               |> List.nth(board)
+               |> ((xs) => List.nth(xs, x + mx))
+               |> (({Cell.status}) => status == Cell.Live)
+             ) {
+             | Failure(_) => false
+             }
+         )
+      |> List.filter((t) => t);
+    Cell.(
+      switch status {
+      | Death => List.length(survivers) == 3
+      | Live =>
+        let n = List.length(survivers);
+        n == 2 || n == 3
+      }
+    )
   };
-
-  board |> List.map(
-        List.map(({ Cell.x, y, status }) => {
-          Cell.x,
-          y,
-          status: survive(x, y, status) ? Cell.Live : Cell.Death
-        })
-      )
+  board
+  |> List.map(
+       List.map(
+         ({Cell.x, y, status}) => {
+           Cell.x,
+           y,
+           status: survive(x, y, status) ? Cell.Live : Cell.Death
+         }
+       )
+     )
 };
 
-let rec tick = (period, board) => switch period {
+let rec tick = (period, board) =>
+  switch period {
   | 0 => board
   | _ => tick(period - 1, next(board))
-};
+  };
 
 exception Unreachable;
 
