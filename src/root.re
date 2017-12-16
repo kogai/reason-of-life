@@ -1,35 +1,46 @@
 type state = {
+  period: int,
   size: int,
   board: list(list(Cell.t))
 };
+
 type action =
   | Inc
   | Dec
   | Spawn
   | Play;
+
 let inc = (_) => Inc;
+
 let dec = (_) => Dec;
+
 let spawn = (_) => Spawn;
+
 let play = (_) => Play;
+
+exception Unreachable;
 
 let make = (_children) => {
   ...ReasonReact.reducerComponent("Page"),
   initialState: () => {
+    period: 100,
     size: 16,
     board:
-    Utils.(16
-      |> range
-      |> List.rev
-      |> List.map(
-           (y) => 16 |> range |> List.rev |> List.map((x) => {Cell.x, y, status: Cell.Death})
-         ))
+      Utils.(
+        16
+        |> range
+        |> List.rev
+        |> List.map(
+             (y) => 16 |> range |> List.rev |> List.map((x) => {Cell.x, y, status: Cell.Death})
+           )
+      )
   },
   reducer: (a, s) =>
     switch a {
     | Inc => ReasonReact.Update({...s, size: s.size + 1})
     | Dec => ReasonReact.Update({...s, size: s.size - 1})
-    | Play => raise ""
-    | Spaw => raise ""
+    | Play => raise(Unreachable)
+    | Spawn => raise(Unreachable)
     },
   render: (self) =>
     <div>
@@ -44,7 +55,11 @@ let make = (_children) => {
           (ReasonReact.stringToElement("Spawn"))
         </button>
         <button className="button" onClick=(self.reduce(play))>
-          (ReasonReact.stringToElement("Play"))
+          (
+            ReasonReact.stringToElement(
+              Printf.sprintf("Play(%s)", string_of_int(self.state.period))
+            )
+          )
         </button>
       </div>
       (
