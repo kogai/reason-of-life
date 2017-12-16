@@ -1,13 +1,12 @@
 .my {
   height: 1rem;
   width: 1rem;
-  display: inline-block;
 }
 
 .myActive {
-  background-color: #efefef;
+  background-color: #4ff;
 }
 
 .myInActive {
-  background-color: #010101;
+  background-color: #fcfcfc;
 }

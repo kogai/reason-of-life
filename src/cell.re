@@ -4,19 +4,24 @@ type life =
   | Live
   | Death;
 
-type t = {status: life};
+type t = {
+  x: int,
+  y: int,
+  status: life
+};
 
-let make = (~status, _children) => {
+let make = (~status, ~x, ~y, _children) => {
   ...ReasonReact.statelessComponent("Cell"),
-  render: (_self) => {
-    Js.log(CellCss.style);
+  render: (_self) =>
     <div
-      className=(cx(
-        switch status {
-        | Live => CellCss.style##myActive
-        | Death => CellCss.style##myInActive
-        }, CellCss.style##my
-      ))
+      className=(
+        cx(
+          switch status {
+          | Live => CellCss.style##myActive
+          | Death => CellCss.style##myInActive
+          },
+          CellCss.style##my
+        )
+      )
     />
-  }
 };
